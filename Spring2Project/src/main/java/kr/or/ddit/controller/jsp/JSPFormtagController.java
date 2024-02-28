@@ -62,6 +62,8 @@ public class JSPFormtagController {
 	@RequestMapping(value="/registerForm01", method=RequestMethod.GET)
 	public String registerForm01(Model model) {
 		log.info("registerForm01() 실행...!");
+		//순환체계를 연결하려면 아래와 같이
+		//member안에 있는 데이터가 form안의 path속성에 의해 id, name을 만들어주고, value로 자동 매핑됨
 		model.addAttribute("member", new Member());
 		return "home/formtag/registerForm01";
 	}
