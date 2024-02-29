@@ -1,7 +1,10 @@
 package kr.or.ddit.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -12,8 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.or.ddit.vo.AddressBook;
@@ -26,6 +31,7 @@ public class TestController02 {
 	
 	//db static로
 	private static ArrayList<AddressBook> addressBookList;
+	private static ArrayList<AddressBook> bookmarkList;
 	
 	// TestController02 객체 생성 -> 본인 생성자 실행 -> 
 	// @PostConstruct 어노테이션 조회 -> 찾으면 가장 먼저 실행
@@ -33,6 +39,7 @@ public class TestController02 {
 	@PostConstruct
 	public void init() {
 		addressBookList = new ArrayList<>();
+		bookmarkList = new ArrayList<>();
 		createAddressBook();
 	}
 	
@@ -74,6 +81,7 @@ public class TestController02 {
 		addressBookList.add(ab1);
 		addressBookList.add(ab2);
 		addressBookList.add(ab3);
+//		bookmarkList.add(ab1);
 	}
 
 	//동기로 쓰려고
@@ -86,9 +94,17 @@ public class TestController02 {
 	//json형식으로 데이터 반환
 	@RequestMapping(value = "/getList.do", method = RequestMethod.GET, produces ="application/json; charset=UTF-8")
 	public ResponseEntity<String> getList() {
+		//list 자체를 json형태로 변환 후 보냄
 		String jsonData = getListForJsonData(addressBookList);
 		log.info(jsonData);
 		
+		return new ResponseEntity<String>(jsonData, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getBookMarkList.do", method=RequestMethod.GET, produces ="application/json; charset=UTF-8")
+	public ResponseEntity<String> getBookMarkList(){
+		String jsonData = getListForJsonData(bookmarkList);
+		log.info("jsonData >> " + jsonData);
 		return new ResponseEntity<String>(jsonData, HttpStatus.OK);
 	}
 
@@ -112,6 +128,80 @@ public class TestController02 {
 		return new ResponseEntity<String>("success",HttpStatus.OK);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="/removeAddress.do", method=RequestMethod.POST)
+	public ResponseEntity<String> removeAddress(@RequestBody String id){
+		//id를 받아오면, id:1 이렇게 받아옴 -> 이런방식으로 받아오면 안됨
+		//단일데이터를 받아오는 방식인 Map<String, String> map 사용
+		//방식1
+//		ObjectMapper objMapper = new ObjectMapper();
+//		
+//		try {
+//			JsonNode node = objMapper.readTree(id);
+//			//HTML NODE 형식을 읽어오는데 TREE 형식으로 읽어옴
+//			//XML <html><head></head><body><div></div></body>
+//			
+//			//field에 대한 id 키 값을 넣고
+//			int no = node.get("id").asInt();
+//			
+//			System.out.println(">> " + no);
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
+		ObjectMapper objMapper = new ObjectMapper();
+		
+		try {
+			JsonNode node = objMapper.readTree(id);
+			//HTML NODE 형식을 읽어오는데 TREE 형식으로 읽어옴
+			//XML <html><head></head><body><div></div></body>
+			
+			//field에 대한 id 키 값을 넣고
+			int no = node.get("id").asInt();
+			
+			Iterator<AddressBook> it = addressBookList.iterator();
+			
+			while(it.hasNext()) {
+				AddressBook item = it.next();
+				if(item.getNo() == no) {
+					bookmarkList.add(item);
+					it.remove();
+					break;
+				}
+			}
+			log.info("addressBookList : {}",addressBookList);
+			log.info("bookmarkList : {}",bookmarkList);
+			
+			System.out.println(">> " + no);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<String>("success",HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/removeBookMark.do", method=RequestMethod.POST)
+	public ResponseEntity<String> removeBookMark(@RequestBody Map<String, String> map) {
+		
+		int no = Integer.parseInt(map.get("id"));
+		
+		ArrayList<AddressBook> copyList = new ArrayList<AddressBook>(bookmarkList);
+		copyList.forEach(item -> {
+			if(item.getNo() == no) {
+				addressBookList.add(item);
+				bookmarkList.remove(item);
+			}
+		});
+		
+		return new ResponseEntity<String>("success", HttpStatus.OK);
+		
+	}
+	
+	
+	
 	//모든 리스트를 받으려고 제너릭타입 선언x
 	private String getListForJsonData(List list) {
 		
@@ -124,7 +214,7 @@ public class TestController02 {
 		try {
 			jsonData = objMapper.writeValueAsString(list);
 			// LIST 데이터를 JSON 스트링 형태로 변환 시킨다
-			//{"no":1, "name":"이명문"}
+			//{"no":1, "name":"이명문"} -> 1, 이명문
 			
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
