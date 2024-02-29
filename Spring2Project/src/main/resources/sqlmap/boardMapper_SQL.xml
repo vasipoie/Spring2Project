@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- IBoardMapper를 Qualified Name 알아서 바인딩됨 -->
+<mapper namespace="kr.or.ddit.mapper.IBoardMapper">
+
+	<!-- mapper.create(board); 에서 메소드 명이 id / Alias에서 BoardVO를 board로 별칭 해놓음-->
+	<insert id="create" parameterType="board" useGeneratedKeys="true">
+		<selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
+			select seq_board.nextval from dual
+		</selectKey>
+		insert into board(
+			board_no, title, content, writer, reg_date
+		)
+		values(
+			#{boardNo}, #{title}, #{content}, #{writer}, sysdate
+		)
+	</insert>
+
+
+	<select id="list" resultType="board">
+		select
+			board_no, title, content, writer, reg_date
+		from board
+		order by board_no desc
+	</select>
+	
+	
+	<select id="read" parameterType="int" resultType="board">
+		select
+			board_no, title, content, writer, reg_date
+		from board
+		where board_no = #{boardNo}
+	</select>
+
+
+	<update id="update" parameterType="board">
+		update board
+		set
+			title = #{title},
+			content = #{content},
+			reg_date = sysdate
+		where board_no = #{boardNo}
+	</update>
+	
+	
+	<delete id="delete" parameterType="int">
+		delete from board
+		where board_no = #{boardNo}
+	</delete>
+
+
+	<select id="search" parameterType="board" resultType="board">
+		select
+			board_no, title, content, writer, reg_date
+		from board
+		where 1=1
+		<if test="title != null and title != '' ">
+			and title like '%'||#{title}||'%'
+		</if>
+		order by board_no desc
+	</select>
+
+</mapper>
