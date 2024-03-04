@@ -4,6 +4,25 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.mapper.IMemberMapper">
 
+	<!-- 
+		type="crudMember" : resultMap에서 자바빈즈 클래스 객체 타입이 어떤건지 명시 
+	-->
+	<resultMap type="crudMember" id="memberMap">
+		<id property="userNo" column="user_no"/>
+		<result property="userNo" column="user_no"/>
+		<result property="userId" column="user_id"/>
+		<result property="userPw" column="user_pw"/>
+		<result property="userName" column="user_name"/>
+		<result property="regDate" column="reg_date"/>
+		<result property="updDate" column="upd_date"/>
+		<collection property="authList" resultMap="authMap"/>
+	</resultMap>
+	
+	<resultMap type="crudMemberAuth" id="authMap">
+		<result property="userNo" column="user_no"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+
 	<insert id="create" parameterType="crudMember" useGeneratedKeys="true">
 		<selectKey keyProperty="userNo" resultType="int" order="BEFORE">
 			select seq_member.nextval from dual
@@ -31,6 +50,34 @@
 		from member
 		order by user_no desc
 	</select>
+	
+	
+	<select id="read" parameterType="int" resultMap="memberMap">
+		select
+			m.user_no, user_id, user_pw, user_name, reg_date, upd_date
+			, auth
+		from member m left outer join member_auth ma on(m.user_no = ma.user_no)
+		where m.user_no = #{userNo}
+	</select>
+	
+	
+	<update id="modify" parameterType="crudMember">
+		update member
+		set
+			user_name = #{userName}
+		where user_no = #{userNo}
+	</update>
+	
+	
+	<delete id="deleteAuth" parameterType="int">
+		delete from member_auth
+		where user_no = #{userNo}
+	</delete>
+	
+	<delete id="delete" parameterType="int">
+		delete from member
+		where user_no = #{userNo}
+	</delete>
 
 
 
