@@ -44,7 +44,6 @@ public class ItemServiceImpl implements IItemService {
 	@Override
 	public void remove(int itemId) {
 		mapper.remove(itemId);
-		
 	}
 
 }
