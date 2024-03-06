@@ -8,12 +8,21 @@
 	</definition>
 	
 	<!-- 
+		extends : 뒤에 쓴 name값
 		name : page정보 리턴값
+		
 		notice/*/*
 		value="/WEB-INF/views/notice/{1}/{2}"
 			=> 첫번째 *는 {1}에, 두번째 *은 {2}에 매핑됨
 	 -->
 	<definition name="notice/*" extends="mainTemplate">
+		<put-attribute name="content" value="/WEB-INF/views/notice/{1}.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="loginTemplate" template="/WEB-INF/views/loginTemplate.jsp">
+	</definition>
+	
+	<definition name="conn/*" extends="loginTemplate">
 		<put-attribute name="content" value="/WEB-INF/views/notice/{1}.jsp"></put-attribute>
 	</definition>
 
