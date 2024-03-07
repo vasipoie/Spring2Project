@@ -30,7 +30,7 @@
 					<h3 class="card-title">공지사항 ${name }</h3>
 					<div class="card-tools"></div>
 				</div>
-				<form method="post" action="/notice/insert.do" id="noticeForm">
+				<form method="post" action="/notice/insert.do" id="noticeForm" enctype="multipart/form-data">
 					<c:if test="${status eq 'u' }">
 						<input type="hidden" name="boNo" value="${notice.boNo }" />
 					</c:if>
@@ -45,14 +45,14 @@
 							<textarea id="boContent" name="boContent" class="form-control"
 								rows="14">${notice.boContent }</textarea>
 						</div>
-						<!--                   <div class="form-group"> -->
-						<!--                      <div class="custom-file"> -->
-
-						<!--                         <input type="file" class="custom-file-input" id="customFile" -->
-						<!--                            multiple="multiple"> <label class="custom-file-label" -->
-						<!--                            for="customFile">파일을 선택해주세요</label> -->
-						<!--                      </div> -->
-						<!--                   </div> -->
+		                  <div class="form-group">
+		                     <div class="custom-file">
+	
+		                        <input type="file" class="custom-file-input" id="boFile" name="boFile"
+		                           multiple="multiple"> 
+		                           <label class="custom-file-label" for="customFile">파일을 선택해주세요</label>
+		                     </div>
+		                  </div>
 					</div>
 
 					<c:if test="${status eq 'u' }">
@@ -129,7 +129,9 @@
 </section>
 <script>
 $(function(){
-	CKEDITOR.replace("boContent");
+	CKEDITOR.replace("boContent", {
+		filebrowserUploadUrl : '/imageUpload.do'
+	});
 	
 	var noticeForm = $("#noticeForm");
 	var listBtn = $("#listBtn");
