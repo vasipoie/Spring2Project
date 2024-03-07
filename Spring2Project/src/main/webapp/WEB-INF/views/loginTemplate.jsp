@@ -14,6 +14,14 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/dist/css/adminlte.min.css">
 <script src="${pageContext.request.contextPath }/resources/plugins/jquery/jquery.min.js"></script>
 </head>
+<c:if test="${not empty message }">
+	<script type="text/javascript">
+		alert("${message}");
+	//메세지 처리를 편리하게 하려고 script안에 써 봄
+	<c:remove var="message" scope="request"/>
+	<c:remove var="message" scope="session"/>
+	</script>
+</c:if>
 <!-- ${bodyText } : 페이지가 바뀔 때마다 가지고 올 class명 -->
 <body class="hold-transition ${bodyText }" 
 	style="background-image: url('${pageContext.request.contextPath }/resources/dist/img/background04.jpg');background-size: cover;">
