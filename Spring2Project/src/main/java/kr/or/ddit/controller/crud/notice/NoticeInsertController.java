@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.service.INoticeService;
+import kr.or.ddit.vo.crud.NoticeMemberVO;
 import kr.or.ddit.vo.crud.NoticeVO;
 
 @Controller
@@ -30,6 +33,9 @@ public class NoticeInsertController {
 	
 	@RequestMapping(value="insert.do", method=RequestMethod.POST)
 	public String noticeInsert(
+			//넘겨받은 파일을 받기위해 HttpServletRequest
+			HttpServletRequest req,
+			//noticeVO : 일반데이터 + 파일데이터가 담겨서 들어옴
 			NoticeVO noticeVO, Model model
 			, RedirectAttributes ra) {
 		String goPage = ""; //이동할 페이지 정보
@@ -52,14 +58,22 @@ public class NoticeInsertController {
 			model.addAttribute("noticeVO", noticeVO);
 			goPage = "notice/form";
 		}else {
-			noticeVO.setBoWriter("a001"); //임시 작성자 데이터 설정
-			ServiceResult result = noticeService.insertNotice(noticeVO);
-			if(result.equals(ServiceResult.OK)) {	//등록 성공
-				ra.addFlashAttribute("message", "게시글 등록이 성공했습니다!");
-				goPage = "redirect:/notice/detail.do?boNo="+noticeVO.getBoNo();
-			}else {		//등록 실패
-				model.addAttribute("message", "서버에러, 다시 시도해주세요!");
-				goPage = "notice/form";
+			HttpSession session = req.getSession();
+			NoticeMemberVO memberVO = (NoticeMemberVO)session.getAttribute("SessionInfo");
+			
+			if(memberVO != null) {
+				noticeVO.setBoWriter(memberVO.getMemId());
+				ServiceResult result = noticeService.insertNotice(req, noticeVO);
+				if(result.equals(ServiceResult.OK)) {	//등록 성공
+					ra.addFlashAttribute("message", "게시글 등록이 성공했습니다!");
+					goPage = "redirect:/notice/detail.do?boNo="+noticeVO.getBoNo();
+				}else {		//등록 실패
+					model.addAttribute("message", "서버에러, 다시 시도해주세요!");
+					goPage = "notice/form";
+				}
+			}else {	//로그인을 하지 않았을 때
+				ra.addFlashAttribute("message", "로그인 후에 사용가능합니다");
+				goPage = "redirect:/notice/login.do";
 			}
 		}
 		
