@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -101,8 +102,11 @@ public class NoticeLoginController {
 	public String loginCheck(
 			HttpSession session,
 			NoticeMemberVO memberVO, Model model) {
+		
 		String goPage = "";
+		
 		Map<String, String> errors = new HashMap<String, String>();
+		
 		if(StringUtils.isBlank(memberVO.getMemId())) {
 			errors.put("memId", "아이디를 입력해주세요!");
 		}
@@ -132,7 +136,43 @@ public class NoticeLoginController {
 		
 	}
 
+	@RequestMapping(value="/forget.do", method = RequestMethod.GET)
+	public String loginForgetIdAndPw(Model model) {
+		model.addAttribute("bodyText", "login-page");
+		return "conn/forget";
+	}
 	
+	
+	// 아이디 찾기 기능 요청(비동기)
+	@ResponseBody
+	@RequestMapping(value="/idForget.do", method = RequestMethod.POST)
+	public ResponseEntity<String> idForgetProcess(
+			@RequestBody NoticeMemberVO noticeMemberVO,
+			Model model) {
+		log.info("넘겨받은 이메일 : " + noticeMemberVO.getMemEmail());
+		log.info("넘겨받은 이름 : " + noticeMemberVO.getMemName());
+		
+		String memId = noticeService.idForget(noticeMemberVO);
+		
+		
+		return new ResponseEntity<String>(memId, HttpStatus.OK);
+	}
+
+	// 비밀번호 찾기 기능 요청(비동기)
+	@ResponseBody
+	@RequestMapping(value="/pwForget.do", method = RequestMethod.POST)
+	public ResponseEntity<String> pwForgetProcess(
+			@RequestBody NoticeMemberVO noticeMemberVO,
+			Model model) {
+		
+		log.info("넘겨받은 아이디 : " + noticeMemberVO.getMemId());
+		log.info("넘겨받은 이메일 : " + noticeMemberVO.getMemEmail());
+		log.info("넘겨받은 이름 : " + noticeMemberVO.getMemName());
+		
+		String memPw = noticeService.pwForget(noticeMemberVO);
+		
+		return new ResponseEntity<String>(memPw, HttpStatus.OK);
+	}
 	
 	
 	
