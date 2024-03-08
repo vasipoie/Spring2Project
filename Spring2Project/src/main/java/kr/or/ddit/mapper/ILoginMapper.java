@@ -7,4 +7,7 @@ public interface ILoginMapper {
 	public int signup(NoticeMemberVO memberVO);
 	public void signupAuth(int memNo);
 	public NoticeMemberVO loginCheck(NoticeMemberVO memberVO);
+	
+	public NoticeMemberVO idForget(NoticeMemberVO noticeMemberVO);
+	public NoticeMemberVO pwForget(NoticeMemberVO noticeMemberVO);
 }
