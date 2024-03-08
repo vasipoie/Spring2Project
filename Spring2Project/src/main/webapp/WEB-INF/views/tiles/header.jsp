@@ -1,8 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
 	<ul class="navbar-nav">
-		<li class="nav-item"><a class="nav-link" data-widget="pushmenu"
-			href="#" role="button"><i class="fas fa-bars"></i></a></li>
+		<li class="nav-item">
+			<a class="nav-link" data-widget="pushmenu"
+			href="#" role="button">
+				<i class="fas fa-bars"></i>
+			</a>
+		</li>
+	</ul>
+	<ul class="navbar-nav ml-auto">
+		<li class="nav-item dropdown">
+			<a class="nav-link" data-toggle="dropdown" href="#">
+				<i class="fas fa-user"></i>
+			</a>
+			<div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+				<a href="/notice/profile.do" class="dropdown-item dropdown-footer">
+					마이페이지
+				</a>
+				<div class="dropdown-divider"></div>
+				<a href="/notice/logout.do" class="dropdown-item dropdown-footer">
+					로그아웃
+				</a>
+			</div>
+		</li>
 	</ul>
 </nav>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
