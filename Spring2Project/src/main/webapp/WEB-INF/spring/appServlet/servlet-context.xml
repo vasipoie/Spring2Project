@@ -43,8 +43,11 @@
 <!-- 	 <beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"> -->
 <!-- 	 </beans:bean> -->
 	
-	
-	<context:component-scan base-package="kr.or.ddit" />
+	<!-- 
+		kr.or.ddit 아래에 있는 모든 빈이 등록된다 
+		aop때(240311)kr.or.ddit -> kr.or.ddit.controller로 변경
+	-->
+	<context:component-scan base-package="kr.or.ddit.controller" />
 	
 	
 	
