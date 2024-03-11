@@ -1,6 +1,7 @@
 package kr.or.ddit.controller.crud.notice;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ public class NoticeModifyController {
 	
 	@RequestMapping(value="/update.do", method=RequestMethod.GET)
 	public String noticeUpdateForm(int boNo, Model model) {
+		
 		NoticeVO noticeVO = noticeService.selectNotice(boNo);
 		model.addAttribute("notice", noticeVO);
 		model.addAttribute("status", "u");
@@ -28,12 +30,17 @@ public class NoticeModifyController {
 	}
 	
 	@RequestMapping(value="/update.do", method=RequestMethod.POST)
-	public String noticeUpdate(NoticeVO noticeVO, Model model, RedirectAttributes ra) {
+	public String noticeUpdate(
+			HttpServletRequest req,
+			NoticeVO noticeVO, Model model, RedirectAttributes ra) {
+		
 		String goPage = "";
-		ServiceResult result = noticeService.updateNotice(noticeVO);
+		ServiceResult result = noticeService.updateNotice(req, noticeVO);
+		
 		if(result.equals(ServiceResult.OK)) {	//수정 성공
 			ra.addFlashAttribute("message", "게시글 수정이 완료되었습니다!");
 			goPage = "redirect:/notice/detail.do?boNo="+noticeVO.getBoNo();
+			
 		}else {	//수정 실패
 			model.addAttribute("notice", noticeVO);
 			model.addAttribute("message", "서버에러, 다시 시도해주세요!");
@@ -44,13 +51,22 @@ public class NoticeModifyController {
 	}
 	
 	@RequestMapping(value="/delete.do", method=RequestMethod.POST)
-	public String noticeDelete(int boNo, Model model, RedirectAttributes ra) {
+	public String noticeDelete(
+			HttpServletRequest req,
+			int boNo, Model model, RedirectAttributes ra) {
+		
 		String goPage = "";
 		
-		ServiceResult result = noticeService.deleteNotice(boNo);
+		ServiceResult result = noticeService.deleteNotice(req, boNo);
+		
 		if(result.equals(ServiceResult.OK)) {	//삭제 성공
+			
 			ra.addFlashAttribute("message", "게시글 삭제가 완료되었습니다!");
+			//url이동이 있으면 redirect
+			//작업이 끝나고 새로운 창으로 이동 >> 리다이렉트
+			//작업 진행중 >> 포워드
 			goPage="redirect:/notice/list.do";
+			
 		}else {	//삭제 실패
 			//redirect 할 때는 model 사용 x
 			ra.addFlashAttribute("message", "서버오류, 다시 시도해주세요!");
@@ -58,14 +74,6 @@ public class NoticeModifyController {
 		}
 		return goPage;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
