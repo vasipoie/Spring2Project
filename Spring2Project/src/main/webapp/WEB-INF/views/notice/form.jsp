@@ -56,57 +56,32 @@
 					</div>
 
 					<c:if test="${status eq 'u' }">
-						<div class="card-footer bg-white">
-							<ul
-								class="mailbox-attachments d-flex align-items-stretch clearfix">
-								<li><span class="mailbox-attachment-icon"><i
-										class="far fa-file-pdf"></i></span>
-
-									<div class="mailbox-attachment-info">
-										<a href="#" class="mailbox-attachment-name"><i
-											class="fas fa-paperclip"></i> Sep2014-report.pdf</a> <span
-											class="mailbox-attachment-size clearfix mt-1"> <span>1,245
-												KB</span> <a href="#" class="btn btn-default btn-sm float-right"><i
-												class="fas fa-times"></i></a>
-										</span>
-									</div></li>
-								<li><span class="mailbox-attachment-icon"><i
-										class="far fa-file-word"></i></span>
-
-									<div class="mailbox-attachment-info">
-										<a href="#" class="mailbox-attachment-name"><i
-											class="fas fa-paperclip"></i> App Description.docx</a> <span
-											class="mailbox-attachment-size clearfix mt-1"> <span>1,245
-												KB</span> <a href="#" class="btn btn-default btn-sm float-right"><i
-												class="fas fa-times"></i></a>
-										</span>
-									</div></li>
-								<li><span class="mailbox-attachment-icon has-img"><img
-										src="${pageContext.request.contextPath }/resources/dist/img/photo1.png"
-										alt="Attachment"></span>
-
-									<div class="mailbox-attachment-info">
-										<a href="#" class="mailbox-attachment-name"><i
-											class="fas fa-camera"></i> photo1.png</a> <span
-											class="mailbox-attachment-size clearfix mt-1"> <span>2.67
-												MB</span> <a href="#" class="btn btn-default btn-sm float-right"><i
-												class="fas fa-times"></i></a>
-										</span>
-									</div></li>
-								<li><span class="mailbox-attachment-icon has-img"><img
-										src="${pageContext.request.contextPath }/resources/dist/img/photo2.png"
-										alt="Attachment"></span>
-
-									<div class="mailbox-attachment-info">
-										<a href="#" class="mailbox-attachment-name"><i
-											class="fas fa-camera"></i> photo2.png</a> <span
-											class="mailbox-attachment-size clearfix mt-1"> <span>1.9
-												MB</span> <a href="#" class="btn btn-default btn-sm float-right"><i
-												class="fas fa-times"></i></a>
-										</span>
-									</div></li>
-							</ul>
-						</div>
+						<c:if test="${not empty notice.noticeFileList }">
+							<div class="card-footer bg-white">
+								<ul class="mailbox-attachments d-flex align-items-stretch clearfix">
+									<c:forEach items="${notice.noticeFileList }" var="noticeFile">
+										<li>
+											<span class="mailbox-attachment-icon">
+												<i class="far fa-file-pdf"></i>
+											</span>
+		
+											<div class="mailbox-attachment-info">
+												<a href="#" class="mailbox-attachment-name">
+													<i class="fas fa-paperclip"></i> ${noticeFile.fileName }
+												</a> 
+													<span class="mailbox-attachment-size clearfix mt-1"> 
+														<span>${noticeFile.fileFancysize }</span> 
+														<span class="btn btn-default btn-sm float-right attatchmentFileDel"
+															id="span_${noticeFile.fileNo }">
+															<i class="fas fa-times"></i>
+														</span>
+													</span>
+											</div>
+										</li>
+									</c:forEach>
+								</ul>
+							</div>
+						</c:if>
 					</c:if>
 					<div class="card-footer bg-white">
 						<div class="row">
@@ -171,5 +146,31 @@ $(function(){
 		location.href="/notice/detail.do?boNo=${notice.boNo}";
 	});
 	
+	$(".attatchmentFileDel").on('click', function(){
+		//id를 가져옴 : span_${noticeFile.fileNo }
+		var id = $(this).prop("id");
+		//indexOf("찾을 문자"). 찾는 문자열이 없는 경우, -1을 반환
+		var idx = id.indexOf("_");	//4
+		//substring("시작 위치", "종료 위치") or substring("시작 위치") 문자열 자르기
+		var noticeFileNo = id.substring(idx + 1);
+		var ptrn = "<input type='hidden' name='delNoticeNo' value='%V'/>";
+		noticeForm.append(ptrn.replace("%V", noticeFileNo));
+		$(this).parents("li:first").hide();
+	});
+	
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
