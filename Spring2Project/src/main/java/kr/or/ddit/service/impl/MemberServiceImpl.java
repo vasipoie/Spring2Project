@@ -1,10 +1,12 @@
 package kr.or.ddit.service.impl;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.ddit.mapper.IMemberMapper;
 import kr.or.ddit.service.IMemberService;
@@ -17,13 +19,21 @@ public class MemberServiceImpl implements IMemberService {
 	@Inject
 	private IMemberMapper mapper;
 	
+	//RuntimeException이 아닌 IOException이어도 rollbackFor을 했더니 rollback처리가 됨
+	//여러개를 하고싶으면 중괄호 {IOException.class, IOException.class, IOException.class}
+	@Transactional(rollbackFor = IOException.class)
 	@Override
-	public void register(CrudMember member) {
+	public void register(CrudMember member) throws IOException {
 		mapper.create(member);
 		
 		CrudMemberAuth memberAuth = new CrudMemberAuth();
 		memberAuth.setUserNo(member.getUserNo());
 		memberAuth.setAuth("ROLE_USER");
+		
+		if(true) {
+			throw new IOException(); //RuntimeException을 상속받지않음. 롤백되지않는다
+//			throw new NullPointerException(); //RuntimeException을 상속받아서 자동 롤백처리됨
+		}
 		
 		mapper.createAuth(memberAuth);
 		
