@@ -42,6 +42,23 @@
 		where mem_id = #{memId}
 		and mem_pw = #{memPw}
 	</select>
+	
+	<select id="idForget" parameterType="noticeMemberVO" resultType="noticeMemberVO">
+		select
+			mem_id
+		from noticemember
+		where mem_email = #{memEmail}
+		and mem_name = #{memName}
+	</select>
+	
+	<select id="pwForget" parameterType="noticeMemberVO" resultType="noticeMemberVO">
+		select
+			mem_pw
+		from noticemember
+		where mem_id = #{memId}
+		and mem_email = #{memEmail}
+		and mem_name = #{memName}
+	</select>
 
 </mapper>
 
