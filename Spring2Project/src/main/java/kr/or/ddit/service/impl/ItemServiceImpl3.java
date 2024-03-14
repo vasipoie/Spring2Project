@@ -51,6 +51,8 @@ public class ItemServiceImpl3 implements IItemService3 {
 		mapper.modify(item);
 		
 		int itemId = item.getItemId();
+		
+		//일단 원래 있던걸 다 삭제하고
 		mapper.deleteAttach(itemId);
 		
 		String[] files = item.getFiles();

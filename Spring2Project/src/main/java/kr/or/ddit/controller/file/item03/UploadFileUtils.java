@@ -17,6 +17,7 @@ public class UploadFileUtils {
 			String uploadPath, String originalFileName, byte[] fileData
 			) throws Exception {
 		
+		//랜덤 난수 만들기
 		UUID uuid = UUID.randomUUID();
 		
 		// UUID_원본파일명 구성
@@ -30,10 +31,14 @@ public class UploadFileUtils {
 		
 		// 위에서 만들어진 경로와 파일명을 가지고 파일 복사를 진행한다.
 		FileCopyUtils.copy(fileData, target);
+		//FileCopyUtils.copy(오른쪽 값의 파일 데이터, 경로+파일명);
+		
+		//파일명에서 확장자 추출
 		String formatName = originalFileName.substring(
 				originalFileName.lastIndexOf(".")+1); //확장자 추출
 		
 		// \2024\03\06 경로를 /경로로 변경 후 원본 파일명의 경로까지 붙인다.
+		//File.separatorChar : \ 를 / 로 바꿔준다
 		String uploadedFileName = savedPath.replace(File.separatorChar, '/') + "/" + savedName;
 		
 		// 확장자가 이미지 파일이면 s_가 붙은 파일의 썸네일 이미지 파일을 생성한다.
@@ -54,8 +59,12 @@ public class UploadFileUtils {
 		//targetSize : 값 100으로 설정, 정사각형 사이즈로 100X100
 		BufferedImage destImg = Scalr.resize(sourceImg
 				, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, 100);
+		
+		//썸네일 이름은 
 		String thumbnailName = 
 				uploadPath + savedPath + File.separator + "s_" + savedName;
+		
+		//확장자 추출
 		String formatName = savedName.substring(savedName.lastIndexOf(".")+1);
 		
 		// s_가 붙은 썸네일 이미지 파일(경로 + s_파일명)
@@ -68,11 +77,14 @@ public class UploadFileUtils {
 	private static String calcPath(String uploadPath) {
 		
 		Calendar cal = Calendar.getInstance();
+		
+		//File.separator : 폴더로 만들려고 구분자 넣어줌 = "/"이거랑 같음
 		// /2024
 		String yearPath = File.separator + cal.get(Calendar.YEAR);
 		
 		// /2024/03
-		// DecimalFormat("00") : 두자리에서 빈자리는 0으로 채움
+		// DecimalFormat("00") : 두자리에서 빈자리는 0으로 채움. 월을 두자리로 만들어주는 포맷
+		//(Calendar.MONTH) + 1 : 한국에서는 +1이 필요함
 		String monthPath = yearPath + File.separator 
 				+ new DecimalFormat("00").format(cal.get(Calendar.MONTH) + 1);
 		
@@ -90,11 +102,15 @@ public class UploadFileUtils {
 	//키워드 '...'을 사용
 	//[사용법] 타입...변수명 형태로 사용
 	//순서대로 yearPath, monthPath, datePath가 배열로 들어가 처리
+	
+	//인자가 변할 수 있음. 확장인자.
+	//calcPath에서 yearPath, monthPath, datePath 외에도 다른 path를 넣고 싶으면 위에만 추가하면 알아서 배열로 들어간다
 	private static void makeDir(String uploadPath, String ... paths) {
 		
+		//paths.length-1 : 마지막 배열 = datePath
 		// /2024/03/06 폴더 구조가 존재한다면 굳이 폴더를 만들 필요가 없으니 return
 		// 만들려던 폴더 구조가 이미 만들어져 있는거니까 return 합니다.
-		if(new File(paths[paths.length - 1]).exists()) {
+		if(new File(paths[paths.length - 1]).exists()) {	//2024/03/06 있음?
 			return;
 		}
 		
@@ -102,7 +118,7 @@ public class UploadFileUtils {
 			File dirPath = new File(uploadPath + path);
 			
 			// /2024/03/06 과 같은 경로에 각 폴더가 없으면 각각 만들어준다.
-			if(!dirPath.exists()) {
+			if(!dirPath.exists()) { //2024/03/06 없음?
 				dirPath.mkdirs();
 			}
 		}

@@ -39,18 +39,26 @@
 </body>
 <script type="text/javascript">
 $(function(){
-	var inputFile = $('#inputFile');	//input file element
-	var item3 = $('#item3');			//form element
+	var inputFile = $('#inputFile');	//input file element 파일 부분 선언 
+	var item3 = $('#item3');			//form element 폼 선언
+	
 	
 	item3.submit(function(){
+		
 		var that = $(this);		//현재 누른 form태그
 		var str = "";
+		
 		//a태그를 전부 가져와서
+		//$(".uploadedList a")를 foreach문을 돌린다
 		$(".uploadedList a").each(function(index){
+			
 			//a태그 안에 있는 href를 
+			//this : .uploadList a. attr로 href안에 있는걸 떼온다
 			var value = $(this).attr("href");
+		
 			value = value.substr(28);	// '?fileName=' 다음에 나오는 값
 					
+					//item3 vo에 있는 String[] files; 에 넣으려고 name='files["+index+"]' 형식
 			str += "<input type='hidden' name='files["+index+"]' value='"+value+"'>";
 		});
 		
@@ -62,11 +70,12 @@ $(function(){
 	inputFile.on('change', function(){
 		console.log("change event...!");
 		
-		var files = event.target.files;
+		var files = event.target.files; //파일은 리스트로 가져와진다
 		var file = files[0];
 		
 		console.log(file);	//파일 체크
 		//비동기로 파일전송시 반드시 필요
+		//파일을 ajax 이용해서 컨트롤러로 넘길때는 FormData가 필수
 		var formData = new FormData();
 		formData.append("file", file);
 		
@@ -76,8 +85,10 @@ $(function(){
 			data : formData,
 			dataType : "text",
 			/* 쿼리스트링 구현 안할거니까 false */
+			//쿼리스트링. 파일을 보낼 때는 false로 바꿔줘야한다. 자동적으로 처리는 해주지만, 혹시 모를 오류 대비
 			processData : false,
 			/* multipart 쓸 거니까 false */
+			//true면, enctype이 application이 된다
 			contentType : false,
 			success : function(data){
 				console.log(data);

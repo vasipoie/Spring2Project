@@ -113,42 +113,72 @@ public class FileUploadController03 {
 	@RequestMapping(value="/uploadAjax", method=RequestMethod.POST,
 			produces = "text/plain;charset=utf-8")
 	public ResponseEntity<String> uploadAjax(MultipartFile file) throws Exception{
+		
 		log.info("originalFileName : " + file.getOriginalFilename());
 		
 		// savedName은 /2024/03/06/UUID_원본파일명(오늘날짜/UUID_원본파일명) 을 리턴
+		//resourcePath : 업로드까지의 폴더 경로
+		//getOriginalFilename : 업로드한 파일 이름
+		//getBytes : 업로드한 파일을 컴퓨터가 다시 읽을 수 있는 데이터로. 꼭 필요
 		// UploadFileUtils 클래스를 만들어서 uploadFile 메서드를 만든다
 		String savedName = UploadFileUtils.uploadFile(resourcePath, file.getOriginalFilename(), file.getBytes());
+		//1. UUID 붙여서 /2024/03/06/ UUID_원본 파일명을 가진 파일 생성
+		//2. 그 파일로 썸네일 이미지 만들기 위해 100X100으로 리사이징하고 s_ 붙여서 썸네일 생성
+		
 		return new ResponseEntity<String>(savedName, HttpStatus.OK);
 	}
 	
 	@ResponseBody
 	@GetMapping(value="/displayFile")
 	public ResponseEntity<byte[]> displayFile(String fileName){
+		
+		//파일데이터를 바이트 배열로 써야해서 만들어놓고
 		InputStream in = null;
 		ResponseEntity<byte[]> entity = null;
 		
 		log.info("fileName(displayFile) : " + fileName);
 		
+		//확장자 추출
 		String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
+		
+		//미디어 타입 명시해야하니까
 		MediaType mType = MediaUtils.getMediaType(formatName);
+		
+		//이 정보를 헤더에 담아서 알려줘야하니까 선언해주고
 		HttpHeaders headers = new HttpHeaders();
+		
 		try {
+			
+			//파일 입력하려고 FileInputStream에 담는다(폴더경로+파일이름)
 			in = new FileInputStream(resourcePath + fileName);
-			if(mType != null) {
+			
+			
+			if(mType != null) { //mType이 이미지면
 				headers.setContentType(mType);
-			}else {
+			}else { //mType이 이미지가 아니면
+				
+				//fileName.indexOf("_") uuid 다음의 언더바 이후의 '파일이름.확장자'를 가져옴
 				fileName = fileName.substring(fileName.indexOf("_")+1);
+				
+				//APPLICATION_OCTET_STREAM : 기본 미디어타입
 				headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+				
+				//이미지가 아닐 때 정해져 있는 방식 -> 다운로드 해준다
 				headers.add("Content-Disposition", "attachment; filename=\""
 						+ new String(fileName.getBytes("UTF-8"), "ISO-8859-1") + "\""); 
 			}
-			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in),
-					headers, HttpStatus.CREATED);
+			
+			//toByteArray : 바이트배열로 만들어준다
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in),headers, HttpStatus.CREATED);
+			
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+			
 		} finally {
 			try {
+				//FileInputStream 닫아준다
 				in.close();
 			} catch (IOException e) {
 				e.printStackTrace();
