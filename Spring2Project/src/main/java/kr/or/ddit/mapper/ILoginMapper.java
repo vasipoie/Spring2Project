@@ -10,4 +10,6 @@ public interface ILoginMapper {
 	
 	public NoticeMemberVO idForget(NoticeMemberVO noticeMemberVO);
 	public NoticeMemberVO pwForget(NoticeMemberVO noticeMemberVO);
+	
+	public NoticeMemberVO readByUserId(String username);
 }

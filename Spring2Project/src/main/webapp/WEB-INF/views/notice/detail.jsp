@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <section class="content-header">
 	<div class="container-fluid">
 		<div class="row mb-2">
@@ -62,8 +63,9 @@
 							<button type="button" class="btn btn-danger" id="deleteBtn">삭제</button>
 						</div>
 					</form>
-					<form id="delForm" action="/notice/delete.do" method="post">
+					<form id="delForm" action="/notice/delete.do?${_csrf.parameterName}=${_csrf.token}" method="post">
 						<input type="hidden" name="boNo" value="${notice.boNo }"/>
+						<sec:csrfInput/>
 					</form>
 				</div>
 			</div>

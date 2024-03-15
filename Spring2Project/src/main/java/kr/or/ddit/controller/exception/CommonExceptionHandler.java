@@ -15,18 +15,20 @@ import lombok.extern.slf4j.Slf4j;
 public class CommonExceptionHandler {
 	
 	//@ExceptionHandler 어노테이션은 괄호 안에 설정한 예외 타입을 해당 메소드가 처리한다는 것을 의미
-	@ExceptionHandler(Exception.class)
-	public String handle(Exception e, Model model) {
-		log.info("e : " + e.toString());
-		model.addAttribute("exception", e);
-		return "error/errorCommon";
-	}
+//	@ExceptionHandler(Exception.class)
+//	public String handle(Exception e, Model model) {
+//		
+//		log.info("e : " + e.toString());
+//		model.addAttribute("exception", e);
+//		return "error/errorCommon";
+//	}
 	
 	//404에러만 처리
-	@ExceptionHandler(NoHandlerFoundException.class)
-	@ResponseStatus(value=HttpStatus.NOT_FOUND)
-	public String handler404(Exception e) {
-		log.info("e : " + e.toString());
-		return "error/custom404";
-	}
+//	@ExceptionHandler(NoHandlerFoundException.class)
+//	@ResponseStatus(value=HttpStatus.NOT_FOUND)
+//	public String handler404(Exception e) {
+//		
+//		log.info("e : " + e.toString());
+//		return "error/custom404";
+//	}
 }

@@ -8,6 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AdminLTE 3 | Log in</title>
 
+<meta id="_csrf" name="_csrf" content="${_csrf.token }"/>
+<meta id="_csrf_header" name="_csrf_header" content="${_csrf.headerName }"/>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/plugins/fontawesome-free/css/all.min.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
@@ -22,6 +24,16 @@
 	<c:remove var="message" scope="session"/>
 	</script>
 </c:if>
+<script type="text/javascript">
+var header = "";
+var token = "";
+$(function(){
+	//시큐리티 적용 시, header 키 값과 토큰을 설정(동적 페이지마다 전역변수로 설정된 header, token을 가져다 쓸 수 있다)
+	header = $("meta[name='_csrf_header']").attr("content");
+	token = $("meta[name='_csrf']").attr("content");
+	
+});
+</script>
 <!-- ${bodyText } : 페이지가 바뀔 때마다 가지고 올 class명 -->
 <body class="hold-transition ${bodyText }" 
 	style="background-image: url('${pageContext.request.contextPath }/resources/dist/img/background04.jpg');background-size: cover;">
