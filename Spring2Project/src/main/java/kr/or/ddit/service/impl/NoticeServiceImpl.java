@@ -258,6 +258,8 @@ public class NoticeServiceImpl implements INoticeService {
 		
 		memberVO.setMemProfileimg(proFileImg);
 		
+//		memberVO.setMemPw("a001");
+		
 		//스프링 시큐리티 적용 시, 비밀번호 암호화 설정
 		memberVO.setMemPw(pe.encode(memberVO.getMemPw()));
 		

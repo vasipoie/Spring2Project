@@ -175,7 +175,11 @@ public class NoticeLoginController {
 	}
 	
 	
-	
+	//카카오 로그인
+	@RequestMapping(value="/kakaoLogin.do", method = RequestMethod.GET)
+	public String kakaoLogin(Model model, HttpSession session) {
+		return "conn/kakaoLogin";
+	}
 	
 	
 	

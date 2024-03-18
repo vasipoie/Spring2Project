@@ -31,6 +31,7 @@ public class NoticeRetrieveController {
 			@RequestParam(required = false) String searchWord
 			, Model model
 			) {
+		
 		PaginationInfoVO<NoticeVO> pagingVO = new PaginationInfoVO<NoticeVO>();
 		
 		//검색 기능 추가시 활용

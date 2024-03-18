@@ -41,11 +41,15 @@
       </form>
 
 
-      <p class="mb-1">
+      <span class="mb-1">
         <a href="/notice/forget.do">아이디 찾기&비밀번호 찾기</a>
-      </p>
-      <p class="mb-0">
+      </span>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <span class="mb-0">
         <a href="/notice/signup.do" class="text-center">회원가입</a>
+      </span>
+      <p class="mb-1">
+      	<img alt="" onclick="javascript:location.href='/notice/kakaoLogin.do'" src="${pageContext.request.contextPath }/resources/image/kakao_login_medium_wide.png">
       </p>
     </div>
   </div>

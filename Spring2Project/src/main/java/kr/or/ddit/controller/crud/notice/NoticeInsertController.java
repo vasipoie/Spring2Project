@@ -40,6 +40,7 @@ public class NoticeInsertController {
 			//noticeVO : 일반데이터 + 파일데이터가 담겨서 들어옴
 			NoticeVO noticeVO, Model model
 			, RedirectAttributes ra) {
+		
 		String goPage = ""; //이동할 페이지 정보
 		
 		//넘겨받은 데이터 검증 후, 에러가 발생한 데이터에 대한 에러정보를 담을 공간

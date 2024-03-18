@@ -29,6 +29,7 @@ public class ImageUpload {
 			HttpServletRequest req, HttpServletResponse resp,
 			MultipartHttpServletRequest multiFile
 			) throws Exception {
+		
 		//CKEditor4 특정 버전 이후부터 html 형식의 데이터를 리턴하는 방법에서
 		//json 데이터를 구성해서 리턴하는 방식으로 변경됨
 		JsonObject json = new JsonObject();	//JSON 객체를 만들기 위한 준비
